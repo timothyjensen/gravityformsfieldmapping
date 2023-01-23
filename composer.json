@@ -1,0 +1,16 @@
+{
+    "name": "timothyjensen/gravityformsfieldmapping",
+    "description": "Adds field mapping settings so that fields may be identified by key instead of ID.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Tim Jensen",
+            "email": "tim@timjensen.us"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.4"
+    }
+}
