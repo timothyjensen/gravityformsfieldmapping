@@ -13,9 +13,16 @@ namespace GravityFormsFieldMapping;
 /**
  * FormFieldLookup class.
  */
-class FormFieldLookup {
+class FormFieldLookup extends \GFAddOn {
 
 	public const DATA_KEY = 'fieldMapping';
+
+	/**
+	 * AddOn slug.
+	 *
+	 * @var string
+	 */
+	protected $_slug = 'gravityformsfieldmapping';
 
 	/**
 	 * Form ID.
@@ -62,18 +69,84 @@ class FormFieldLookup {
 	}
 
 	/**
+	 * Returns the field value.
+	 *
+	 * @param array $form
+	 * @param array $entry
+	 * @param string $field_id
+	 * @return mixed
+	 */
+	public function get_field_value( $form, $entry, $field_id ) {
+		$field_value = parent::get_field_value( $form, $entry, $field_id );
+
+		$field = \GFFormsModel::get_field( $form, $field_id );
+
+		if ( is_a( $field, \GF_Field::class ) && $field->is_value_submission_array() && is_string( $field_value ) ) {
+			try {
+				$field_value = json_decode( $field_value, true, 512, JSON_THROW_ON_ERROR );
+			} catch ( \Exception $e ) {
+				$field_value = explode( ', ', $field_value );
+			}
+		}
+
+		return $field_value;
+	}
+
+	/**
 	 * Returns the field ID that corresponds with the supplied key.
 	 *
 	 * @param string $key Field mapping key.
 	 * @return string|null
 	 */
 	public function get_field_id( string $key ): ?string {
-		foreach ( $this->form['fieldMapping'] as $mapping ) {
-			if ( $mapping['custom_key'] === $key ) {
-				return (string) $mapping['value'];
-			}
+		static $field_mapping = null;
+
+		if ( null === $field_mapping ) {
+			$field_mapping = self::get_dynamic_field_map_fields( $this->feed_config(), 'fieldMapping' );
 		}
 
-		return null;
+		return $field_mapping[ $key ] ?? null;
+	}
+
+	/**
+	 * Returns the mapped field values.
+	 *
+	 * @param array $entry
+	 * @return array
+	 */
+	public function field_values( array $entry ): array {
+		static $field_values = null;
+
+		$hash = md5( json_encode( $entry ) );
+
+		if ( ! isset( $field_values[ $hash ] ) ) {
+			$field_values[ $hash ] = $this->get_generic_map_fields( $this->feed_config(), 'fieldMapping', $this->form, $entry );
+		}
+
+		return (array) $field_values[ $hash ];
+	}
+
+	/**
+	 * Returns the mapped field value.
+	 *
+	 * @param array $entry
+	 * @param string $field_name
+	 * @return mixed
+	 */
+	public function field_value( array $entry, string $field_name ) {
+		return $this->field_values( $entry )[ $field_name ] ?? '';
+	}
+
+	/**
+	 * Returns the feed config.
+	 *
+	 * @return array
+	 */
+	private function feed_config(): array {
+		return [
+			'meta' => [
+				'fieldMapping' => $this->form['fieldMapping'] ?? [],
+			],
+		];
 	}
 }

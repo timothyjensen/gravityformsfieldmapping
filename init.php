@@ -94,10 +94,41 @@ function initialize_form_field_lookup( $form ) {
  * @param $key
  * @return string|null
  */
-function get_field_id( $form_id, $key ): ?string {
+function get_mapped_field_id( $form_id, $key ): ?string {
 	if ( ! class_exists( \GFAPI::class ) ) {
 		return null;
 	}
 
 	return FormFieldLookup::make( (int) $form_id )->get_field_id( (string) $key );
+}
+
+/**
+ * Helper function for retrieving the field ID.
+ *
+ * @param $form_id
+ * @param $entry
+ * @param $key
+ * @return string|null
+ */
+function get_mapped_field_value( $form_id, $entry, $key ): ?string {
+	if ( ! class_exists( \GFAPI::class ) ) {
+		return null;
+	}
+
+	return FormFieldLookup::make( (int) $form_id )->field_value( $entry, $key );
+}
+
+/**
+ * Helper function for retrieving the field ID.
+ *
+ * @param $form_id
+ * @param $entry
+ * @return array|null
+ */
+function get_mapped_field_values( $form_id, $entry ): ?array {
+	if ( ! class_exists( \GFAPI::class ) ) {
+		return null;
+	}
+
+	return FormFieldLookup::make( (int) $form_id )->field_values( $entry );
 }

@@ -21,11 +21,21 @@ add_action( 'gform_after_submission', function ( $entry, $form ) {
     $email_field_key   = 'email';
     $message_field_key = 'message';
     
-    $name    = rgar( $entry, \GravityFormsFieldMapping\get_field_id( $form['id'], $name_field_key ) );
-    $email   = rgar( $entry, \GravityFormsFieldMapping\get_field_id( $form['id'], $email_field_key ) );
-    $message = rgar( $entry, \GravityFormsFieldMapping\get_field_id( $form['id'], $message_field_key ) );
+    $name    = \GravityFormsFieldMapping\get_mapped_field_value( $form['id'], $entry, $name_field_key );
+    $email   = \GravityFormsFieldMapping\get_mapped_field_value( $form['id'], $entry, $email_field_key );
+    $message = \GravityFormsFieldMapping\get_mapped_field_value( $form['id'], $entry, $message_field_key );
     
     // Do more stuff...
 }, 10, 2 );
+```
+
+There are three helper functions to simplify retrieving form input data:
+```php
+
+echo \GravityFormsFieldMapping\get_mapped_field_id( $form_id, 'email' ); // Output: 2
+
+echo \GravityFormsFieldMapping\get_mapped_field_value( $form_id, $entry, 'email' ); // Output: name@domain.com
+
+var_export( \GravityFormsFieldMapping\get_mapped_field_values( $form_id, $entry ) ); // Output: [ 'name' => 'First Last', 'email' => name@domain.com, 'message' => 'Test message' ]
 ```
 
