@@ -12,7 +12,7 @@
  * Plugin Name: Gravity Forms Field Mapping
  * Plugin URI:  https://github.com/timothyjensen/gravityformsfieldmapping
  * Description: Adds field mapping settings so that fields may be identified by key instead of ID.
- * Version:     0.2.0
+ * Version:     0.2.1
  * Requires 	PHP: 7.4
  * Author:      Tim Jensen
  * Author URI:  https://www.timjensen.us

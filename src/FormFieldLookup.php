@@ -143,9 +143,17 @@ class FormFieldLookup extends \GFAddOn {
 	 * @return array
 	 */
 	private function feed_config(): array {
+		$field_mapping = $this->form['fieldMapping'] ?? [];
+
+		foreach ( $field_mapping as &$mapping ) {
+			if ( $mapping['value'] ?? '' === 'gf_custom' ) {
+				$mapping['value'] = $mapping['custom_value'] ?? '';
+			}
+		}
+
 		return [
 			'meta' => [
-				'fieldMapping' => $this->form['fieldMapping'] ?? [],
+				'fieldMapping' => $field_mapping,
 			],
 		];
 	}
