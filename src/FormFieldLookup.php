@@ -146,7 +146,7 @@ class FormFieldLookup extends \GFAddOn {
 		$field_mapping = $this->form['fieldMapping'] ?? [];
 
 		foreach ( $field_mapping as &$mapping ) {
-			if ( $mapping['value'] ?? '' === 'gf_custom' ) {
+			if ( isset( $mapping['value'] ) && $mapping['value'] === 'gf_custom' ) {
 				$mapping['value'] = $mapping['custom_value'] ?? '';
 			}
 		}
